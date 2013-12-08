@@ -141,7 +141,8 @@ Backend functionality.
 
 use Mojo::Base 'Mojolicious';
 use Mojo::Redis;
-use File::Spec::Functions qw(catfile tmpdir);
+use File::Spec::Functions qw( catdir catfile tmpdir );
+use File::Basename qw( dirname );
 use Convos::Core;
 use Convos::Core::Util ();
 
@@ -190,6 +191,8 @@ sub startup {
     $self->log->path($log->{file}) if $log->{file} ||= $log->{path};
     delete $log->{handle}; # make sure it's fresh to file
   }
+
+  $self->_from_cpan;
 
   $config->{name} ||= 'Convos';
   $config->{backend}{lock_file} ||= catfile(tmpdir, 'convos-backend.lock');
@@ -256,6 +259,16 @@ sub startup {
       $self->core->start;
     });
   }
+}
+
+sub _from_cpan {
+  my $self = shift;
+  my $home = catdir dirname(__FILE__), 'Convos';
+
+  -d "$dir/convos.conf" or return;
+  $self->home->parse($home);
+  $self->static->paths->[0] = $self->home->rel_dir('public');
+  $self->renderer->paths->[0] = $self->home->rel_dir('templates');
 }
 
 =head1 COPYRIGHT AND LICENSE
