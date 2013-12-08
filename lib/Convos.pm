@@ -66,6 +66,13 @@ To install wirc, you can run the following commands:
   $ morbo script/convos
   # open http://yourdomain:3000 in your favorite browser
 
+Or you can install it from CPAN:
+
+  $ cpanm Convos
+  # create convos.conf, point to a working redis server
+  $ MOJO_CONFIG=$PWD/convos.conf morbo $(which convos)
+  # open http://yourdomain:3000 in your favorite browser
+
 =head2 Running convos in production
 
 L<morbo|Mojo::Server::Morbo> is an excellent tool for testing, but
@@ -73,6 +80,8 @@ L<hypnotoad|Mojo::Server::Hypnotoad> should be used to run Convos in
 production:
 
   $ hypnotoad script/convos
+
+TODO: Document running the proxy as well
 
 The command above will start a full featured, UNIX optimized, preforking
 non-blocking webserver. Run the same command again, and the webserver
